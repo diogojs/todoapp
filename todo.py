@@ -1,11 +1,12 @@
 from flask import Flask, jsonify, request, abort
+from operator import itemgetter
 
 app = Flask('ToDo')
 tasks = []
 
 @app.route('/task')
 def list():
-    return jsonify(tasks)
+    return jsonify(sorted(tasks, key=itemgetter('state')))
 
 @app.route('/task', methods=['POST'])
 def create():

@@ -77,3 +77,16 @@ def test_create_task_without_title():
         }),
         content_type='application/json')
     assert response.status_code == 400
+
+def test_list_tasks_show_not_finished_first():
+    tasks.clear()
+    tasks.append({'id': 1, 'title': 'tarefa 1', 'desc': 'tarefa de numero 1',
+                    'state': True})
+    tasks.append({'id': 2, 'title': 'tarefa 2', 'desc': 'tarefa de numero 2',
+                    'state': False})
+    with app.test_client() as client:
+        response = client.get('/task')
+        data = json.loads(response.data.decode('utf-8'))
+        primeira_task, segunda_task = data
+        assert primeira_task['title'] == 'tarefa 2'
+        assert segunda_task['title'] == 'tarefa 1'
